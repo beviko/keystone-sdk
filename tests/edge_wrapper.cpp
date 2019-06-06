@@ -13,6 +13,8 @@
 #define OCALL_COPY_REPORT 3
 #define OCALL_GET_STRING 4
 
+#define OCALL_STORE_FILE 9
+
 
 int edge_init(Keystone* enclave){
 
@@ -22,9 +24,27 @@ int edge_init(Keystone* enclave){
   register_call(OCALL_COPY_REPORT, copy_report_wrapper);
   register_call(OCALL_GET_STRING, get_host_string_wrapper);
 
+  register_call(OCALL_STORE_FILE, store_file_wrapper);
+
   edge_call_init_internals((uintptr_t)enclave->getSharedBuffer(),
 			   enclave->getSharedBufferSize());
 }
+
+void store_file_wrapper(void* buffer){
+  struct edge_call_t* edge_call = (struct edge_call_t*)buffer;
+  
+  uintptr_t call_args;
+  if(edge_call_args_ptr(edge_call, &call_args) != 0){
+    edge_call->return_data.call_status = CALL_STATUS_BAD_OFFSET;
+    return;
+  }
+  
+  store_file((void*)call_args, edge_call->call_arg_size);
+  edge_call->return_data.call_status = CALL_STATUS_OK;
+
+  return;
+}
+
 void print_buffer_wrapper(void* buffer)
 {
   /* For now we assume the call struct is at the front of the shared

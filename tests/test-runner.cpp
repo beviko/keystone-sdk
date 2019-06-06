@@ -9,6 +9,9 @@
 #include "report.h"
 #include "test_dev_key.h"
 
+#include <fcntl.h>
+#include <unistd.h>
+
 const char* longstr = "hellohellohellohellohellohellohellohellohellohello";
 
 unsigned long print_buffer(char* str){
@@ -53,6 +56,14 @@ void copy_report(void* buffer)
   }
 }
 
+//Test function to store files
+void store_file(void* buffer, int length){
+  int fd = open("/root/testfile", O_RDWR);
+  write(fd, buffer, length);
+  close(fd);
+  printf("File created!\n");
+}
+
 int main(int argc, char** argv)
 {
   if(argc != 3)
@@ -60,6 +71,10 @@ int main(int argc, char** argv)
     printf("Usage: %s <eapp> <runtime>\n", argv[0]);
     return 0;
   }
+/****************************************************/
+  const char* buffer = "Hallo Welt\n";
+  //store_file((void*)buffer, strlen(buffer));
+/****************************************************/
   Keystone enclave;
   Params params;
 

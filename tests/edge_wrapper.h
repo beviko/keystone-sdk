@@ -29,4 +29,7 @@ void copy_report(void* shared_buffer);
 void get_host_string_wrapper(void* buffer);
 const char* get_host_string();
 
+void store_file_wrapper(void* buffer);
+void store_file(void* buffer, int length);
+
 #endif /* _EDGE_WRAPPER_H_ */
