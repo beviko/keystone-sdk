@@ -11,6 +11,11 @@ void EAPP_ENTRY eapp_entry(){
 
   ocall_store_file((void*) message, strlen(message));
 
+  ocall_print_str("Before asm\n", 12);
+  asm ("li a7, 1101;"
+        "ecall;");
+
+  ocall_print_str("After asm\n", 12);
   EAPP_RETURN(0);
 }
 
